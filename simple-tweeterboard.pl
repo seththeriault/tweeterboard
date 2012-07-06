@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Encode;
+use File::Path;
 use LWP::Simple;
 use JSON;
 use POSIX qw(strftime);
@@ -60,6 +61,7 @@ for my $result( @{$search_results_json->{"results"}} ){
 
 }
 
+mkpath("$html_dir");
 my $error = open HTMLFILE, ">:encoding(UTF-8)", $html_output_file;
 
 print HTMLFILE "<HTML>\n<HEAD>\n<title>TweeterBoard ($hashtag)</title>\n</HEAD>\n<BODY>\n<H1>TweeterBoard ($hashtag)</H1>\n<b>Last update:</b><tt> $now_string</tt><br>\nData source: <a href=\"https://twitter.com/#!/search/realtime/$qstring\" target=\"_blank\">search.twitter.com public feed</a>\n<hr>\n";
