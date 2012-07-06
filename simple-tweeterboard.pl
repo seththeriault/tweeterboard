@@ -8,6 +8,8 @@ use LWP::Simple;
 use JSON;
 use POSIX qw(strftime);
 
+our $VERSION = 0.8;
+
 # hashes for tweet data
 my %twitter_tweets = ();
 my %twitter_users = ();
