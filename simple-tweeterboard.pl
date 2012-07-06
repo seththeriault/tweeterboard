@@ -93,7 +93,7 @@ foreach my $key2 (reverse sort numerically_sources (keys(%twitter_sources))) {
 }
 
 print HTMLFILE "\n</BODY>\n</HTML>";
-close HTMLFILE;
+$error = close HTMLFILE;
 
 exit 0;
 
