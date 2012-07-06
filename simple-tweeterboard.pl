@@ -29,7 +29,7 @@ my $twitter_search_uri = "http://search.twitter.com/search.json";
 my $content = get($twitter_search_uri . "?q=$qstring&rpp=200");
 
 # get new max_id
-my $search_results_json = new JSON->allow_nonref->decode($content);
+my $search_results_json = JSON->new->allow_nonref->decode($content);
 
 my $tweet_max_id = scalar ($search_results_json->{"max_id"});
 
@@ -37,18 +37,18 @@ for my $result( @{$search_results_json->{"results"}} ){
 
     # munge the source of tweets
     my $tweet_source = $result->{"source"};
-    $tweet_source =~ s/&gt;/>/g;
-    $tweet_source =~ s/&lt;/</g;
-    $tweet_source =~ s/&quot;/\"/g;
+    $tweet_source =~ s/&gt;/>/gx;
+    $tweet_source =~ s/&lt;/</gx;
+    $tweet_source =~ s/&quot;/\"/gx;
 
     # remove rel="nofollow" links
-    $tweet_source =~ s/ rel=\"nofollow\"//g;
+    $tweet_source =~ s/ rel=\"nofollow\"//gx;
 
     # remove trailing slashes from URIs
-    $tweet_source =~ s/\/\"\>/\"\>/g;
+    $tweet_source =~ s/\/\"\>/\"\>/gx;
 
     # pre-pend "http://twitter.com" to relative links
-    $tweet_source =~ s/href=\"\//href=\"http:\/\/twitter.com\//g;
+    $tweet_source =~ s/href=\"\//href=\"http:\/\/twitter.com\//gx;
 
     # increment counts for statistics
     $twitter_sources{$tweet_source}++;
@@ -57,9 +57,9 @@ for my $result( @{$search_results_json->{"results"}} ){
 
 }
 
-open HTMLFILE, ">:encoding(UTF-8)", $html_output_file;
+my $error = open HTMLFILE, ">:encoding(UTF-8)", $html_output_file;
 
-print HTMLFILE<<EOF;
+print HTMLFILE<<'EOF';
 <HTML>
 <HEAD>
 <title>TweeterBoard ($hashtag)</title>
@@ -98,5 +98,5 @@ close HTMLFILE;
 exit 0;
 
 # subroutines
-sub numerically_users { $twitter_users{$a} <=> $twitter_users{$b}; }
-sub numerically_sources { $twitter_sources{$a} <=> $twitter_sources{$b}; }
+sub numerically_users { return $twitter_users{$a} <=> $twitter_users{$b}; }
+sub numerically_sources { return $twitter_sources{$a} <=> $twitter_sources{$b}; }
