@@ -62,33 +62,33 @@ for my $result( @{$search_results_json->{"results"}} ){
 }
 
 mkpath("$html_dir");
-my $error = open HTMLFILE, ">:encoding(UTF-8)", $html_output_file;
+my $error = open my $html_file_to_write, ">:encoding(UTF-8)", $html_output_file;
 
-print HTMLFILE "<HTML>\n<HEAD>\n<title>TweeterBoard ($hashtag)</title>\n</HEAD>\n<BODY>\n<H1>TweeterBoard ($hashtag)</H1>\n<b>Last update:</b><tt> $now_string</tt><br>\nData source: <a href=\"https://twitter.com/#!/search/realtime/$qstring\" target=\"_blank\">search.twitter.com public feed</a>\n<hr>\n";
+print $html_file_to_write "<HTML>\n<HEAD>\n<title>TweeterBoard ($hashtag)</title>\n</HEAD>\n<BODY>\n<H1>TweeterBoard ($hashtag)</H1>\n<b>Last update:</b><tt> $now_string</tt><br>\nData source: <a href=\"https://twitter.com/#!/search/realtime/$qstring\" target=\"_blank\">search.twitter.com public feed</a>\n<hr>\n";
 
-print HTMLFILE "<H3>" . $twitter_tweets{"total"} . " tweets tagged with <tt>" . $hashtag . "</tt></H3>\n"; 
+print $html_file_to_write "<H3>" . $twitter_tweets{"total"} . " tweets tagged with <tt>" . $hashtag . "</tt></H3>\n"; 
 
-print HTMLFILE "<a name=\"tweeters\"><H3> Tweeters (by number of tweets)</H3><a>\n";
+print $html_file_to_write "<a name=\"tweeters\"><H3> Tweeters (by number of tweets)</H3><a>\n";
 
 foreach my $key (reverse sort numerically_users (keys(%twitter_users))) {
-   print HTMLFILE "<pre>";
-   printf HTMLFILE '%-5s', $twitter_users{$key};
-   print HTMLFILE "<a href=\"http://twitter.com/$key\" target=\"_blank\">";
-   printf HTMLFILE '%s', "$key</a>";
-   print HTMLFILE "</pre>\n";
+   print $html_file_to_write "<pre>";
+   printf $html_file_to_write '%-5s', $twitter_users{$key};
+   print $html_file_to_write "<a href=\"http://twitter.com/$key\" target=\"_blank\">";
+   printf $html_file_to_write '%s', "$key</a>";
+   print $html_file_to_write "</pre>\n";
 }
 
-print HTMLFILE "<a name=\"clients\"><H3>Twitter Clients (by # of tweets)</H3></a>\n";
+print $html_file_to_write "<a name=\"clients\"><H3>Twitter Clients (by # of tweets)</H3></a>\n";
 
 foreach my $key2 (reverse sort numerically_sources (keys(%twitter_sources))) {
-   print HTMLFILE "<pre>";
-   printf HTMLFILE '%-5s', $twitter_sources{$key2};
-   printf HTMLFILE '%30s', $key2;
-   print HTMLFILE "</pre>\n";
+   print $html_file_to_write "<pre>";
+   printf $html_file_to_write '%-5s', $twitter_sources{$key2};
+   printf $html_file_to_write '%30s', $key2;
+   print $html_file_to_write "</pre>\n";
 }
 
-print HTMLFILE "\n</BODY>\n</HTML>";
-$error = close HTMLFILE;
+print $html_file_to_write "\n</BODY>\n</HTML>";
+$error = close $html_file_to_write;
 
 exit 0;
 
