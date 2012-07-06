@@ -7,6 +7,7 @@ use Encode;
 use LWP::Simple;
 use JSON;
 use POSIX qw(strftime);
+use URI::Escape;
 
 our $VERSION = 0.8;
 
@@ -16,7 +17,7 @@ my %twitter_users = ();
 my %twitter_sources = ();
 my %twitter_tweet_dates = ();
 
-my $hashtag = "HASHTAG";
+my $hashtag = "#HASHTAG";
 
 my $now_string = strftime "%a %b %e %Y %T UTC", gmtime;
 my $filetime = strftime "%Y%m%d%H%M", gmtime;
@@ -24,7 +25,7 @@ my $filetime = strftime "%Y%m%d%H%M", gmtime;
 my $html_dir = "tweeterboard-html";
 my $html_output_file = "$html_dir/index.html";
 
-my $qstring = "%23" . "$hashtag";
+my $qstring = uri_escape($hashtag);
 my $twitter_search_uri = "http://search.twitter.com/search.json";
 
 # use old_max_id to get new stuff
@@ -61,19 +62,9 @@ for my $result( @{$search_results_json->{"results"}} ){
 
 my $error = open HTMLFILE, ">:encoding(UTF-8)", $html_output_file;
 
-print HTMLFILE<<'EOF';
-<HTML>
-<HEAD>
-<title>TweeterBoard ($hashtag)</title>
-</HEAD>
-<BODY>
-<H1>TweeterBoard ($hashtag)</H1>
-<b>Last update:</b><tt> $now_string</tt><br>
-Data source: <a href="https://twitter.com/#!/search/realtime/%23$hashtag" target="_blank">search.twitter.com public feed</a>
-<hr>
-EOF
+print HTMLFILE "<HTML>\n<HEAD>\n<title>TweeterBoard ($hashtag)</title>\n</HEAD>\n<BODY>\n<H1>TweeterBoard ($hashtag)</H1>\n<b>Last update:</b><tt> $now_string</tt><br>\nData source: <a href=\"https://twitter.com/#!/search/realtime/$qstring\" target=\"_blank\">search.twitter.com public feed</a>\n<hr>\n";
 
-print HTMLFILE "<H3>" . $twitter_tweets{"total"} . " tweets tagged with <tt>#" . $hashtag . "</tt></H3>\n"; 
+print HTMLFILE "<H3>" . $twitter_tweets{"total"} . " tweets tagged with <tt>" . $hashtag . "</tt></H3>\n"; 
 
 print HTMLFILE "<a name=\"tweeters\"><H3> Tweeters (by number of tweets)</H3><a>\n";
 
